@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OceanAI - Performa Model</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        darkNavy: '#0F172A',
+                        oceanBlue: '#0EA5E9',
+                        cyanGlow: '#38BDF8',
+                        cloudWhite: '#FFFFFF',
+                        lightAqua: '#7DD3FC',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- AOS CSS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="text-white min-h-screen flex flex-col font-sans overflow-x-hidden relative">
+
+    <!-- Navbar -->
+    <nav class="glass-card sticky top-0 z-50 px-8 py-4">
+        <div class="max-w-[1440px] mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-water text-cyanGlow text-2xl animate-pulse"></i>
+                <span class="font-bold text-xl tracking-wider">Ocean<span class="text-cyanGlow">AI</span></span>
+            </div>
+            <div class="hidden md:flex gap-8 text-sm font-medium text-gray-300">
+                <a href="/" class="hover:text-cyanGlow transition">Beranda</a>
+                <a href="/analisis" class="hover:text-cyanGlow transition">Analisis</a>
+                <a href="/performa" class="text-cyanGlow font-semibold transition">Performa Model</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow w-full max-w-[1440px] mx-auto px-8 py-12 flex flex-col items-center justify-center relative z-10">
+        
+
+        <!-- Warning Banner if model is not loaded -->
+        {% if not model_loaded %}
+        <div class="w-full max-w-4xl mx-auto mb-8 bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 p-4 rounded-xl flex items-center gap-3 animate-pulse">
+            <i class="fa-solid fa-triangle-exclamation text-2xl"></i>
+            <div class="text-left">
+                <p class="font-bold text-sm">Model AI Belum Terpasang</p>
+                <p class="text-xs text-gray-400">Berkas model (.h5) tidak ditemukan di server. Harap letakkan berkas model_air.h5 di folder model/ proyek untuk mengaktifkan sistem deteksi.</p>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Header -->
+        <div class="text-center mb-12" data-aos="fade-down">
+            <div class="inline-block px-4 py-1 rounded-full bg-cyanGlow/10 border border-cyanGlow/20 text-cyanGlow text-sm font-semibold mb-4">
+                <i class="fa-solid fa-chart-line mr-2"></i>Evaluasi & Performa Hasil Training
+            </div>
+            <h1 class="text-4xl md:text-5xl font-bold glow-text leading-tight mb-4">
+                Performa Model <span class="text-cyanGlow">InceptionV3</span>
+            </h1>
+            <p class="text-gray-400 text-base md:text-lg max-w-2xl mx-auto">
+                Detail metrik pelatihan model Deep Learning, visualisasi kurva loss & akurasi, serta matriks konfusi hasil pengujian model.
+            </p>
+        </div>
+
+        <!-- Model Specs Cards -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 w-full mb-12" data-aos="fade-up" data-aos-delay="100">
+            <div class="glass-card p-6 rounded-xl text-center border-t-2 border-cyanGlow hover:-translate-y-1 transition duration-300">
+                <p class="text-gray-400 text-sm mb-2">Akurasi Model</p>
+                <h3 class="text-3xl font-bold text-white">{{ model_metadata.accuracy }}%</h3>
+            </div>
+            <div class="glass-card p-6 rounded-xl text-center border-t-2 border-oceanBlue hover:-translate-y-1 transition duration-300">
+                <p class="text-gray-400 text-sm mb-2">Validation Acc</p>
+                <h3 class="text-3xl font-bold text-white">{{ model_metadata.val_accuracy }}%</h3>
+            </div>
+            <div class="glass-card p-6 rounded-xl text-center border-t-2 border-green-400 hover:-translate-y-1 transition duration-300">
+                <p class="text-gray-400 text-sm mb-2">Epoch Training</p>
+                <h3 class="text-3xl font-bold text-white">{{ model_metadata.best_epoch }} Epoch</h3>
+            </div>
+            <div class="glass-card p-6 rounded-xl text-center border-t-2 border-purple-400 hover:-translate-y-1 transition duration-300">
+                <p class="text-gray-400 text-sm mb-2">Total Dataset</p>
+                <h3 class="text-3xl font-bold text-white">{{ model_metadata.total_dataset }}</h3>
+            </div>
+        </div>
+
+        <!-- Training Curves Images -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full mb-12" data-aos="fade-up" data-aos-delay="200">
+            <div class="glass-card p-6 rounded-xl flex flex-col justify-between items-center hover:shadow-[0_0_20px_rgba(56,189,248,0.15)] transition duration-300">
+                <h4 class="text-lg font-semibold mb-4 text-center text-gray-300">Training & Validation Accuracy Curve</h4>
+                <div class="w-full flex justify-center items-center overflow-hidden rounded-lg bg-slate-900/50 p-4 border border-white/5">
+                    <img src="{{ url_for('static', filename='img/accuracy.png') }}" alt="Model Accuracy Curve" class="max-h-[380px] object-contain rounded shadow-lg">
+                </div>
+            </div>
+            <div class="glass-card p-6 rounded-xl flex flex-col justify-between items-center hover:shadow-[0_0_20px_rgba(56,189,248,0.15)] transition duration-300">
+                <h4 class="text-lg font-semibold mb-4 text-center text-gray-300">Training & Validation Loss Curve</h4>
+                <div class="w-full flex justify-center items-center overflow-hidden rounded-lg bg-slate-900/50 p-4 border border-white/5">
+                    <img src="{{ url_for('static', filename='img/loss.png') }}" alt="Model Loss Curve" class="max-h-[380px] object-contain rounded shadow-lg">
+                </div>
+            </div>
+        </div>
+
+        <!-- Confusion Matrix Image -->
+        <div class="w-full max-w-2xl mb-16" data-aos="fade-up" data-aos-delay="300">
+            <div class="glass-card p-6 rounded-xl flex flex-col items-center hover:shadow-[0_0_20px_rgba(56,189,248,0.15)] transition duration-300">
+                 <h4 class="text-lg font-semibold mb-4 text-center text-gray-300">Confusion Matrix (Data Validasi)</h4>
+                 <div class="w-full flex justify-center items-center overflow-hidden rounded-lg bg-slate-900/50 p-4 border border-white/5">
+                     <img src="{{ url_for('static', filename='img/confusion_matrix.png') }}" alt="Model Confusion Matrix" class="max-h-[380px] object-contain rounded shadow-lg">
+                 </div>
+            </div>
+        </div>
+
+
+
+    </main>
+
+    <!-- Waves Background SVG -->
+    <svg class="waves" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+    viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
+        <defs>
+            <path id="gentle-wave" d="M-160 44c30 0 58-18 88-18s58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" />
+        </defs>
+        <g class="parallax">
+            <use xlink:href="#gentle-wave" x="48" y="0" fill="rgba(14, 165, 233, 0.12)" />
+            <use xlink:href="#gentle-wave" x="48" y="3" fill="rgba(56, 189, 248, 0.09)" />
+            <use xlink:href="#gentle-wave" x="48" y="5" fill="rgba(125, 211, 252, 0.06)" />
+            <use xlink:href="#gentle-wave" x="48" y="7" fill="rgba(15, 23, 42, 0.8)" />
+        </g>
+    </svg>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/10 bg-[#0A0F1D] py-12 relative z-10 mt-auto">
+        <div class="max-w-[1440px] mx-auto px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8 text-left">
+                <!-- Brand Section -->
+                <div class="space-y-4">
+                    <div class="flex items-center gap-3">
+                        <i class="fa-solid fa-water text-cyanGlow text-2xl"></i>
+                        <span class="font-bold text-xl tracking-wider">Ocean<span class="text-cyanGlow">AI</span></span>
+                    </div>
+                    <p class="text-xs text-gray-400 leading-relaxed">
+                        Aplikasi deteksi kualitas air laut menggunakan deep learning transfer learning InceptionV3 untuk klasifikasi tingkat polusi air berdasarkan warna citra.
+                    </p>
+                    <p class="text-xs text-gray-500">
+                        &copy; 2026 OceanAI. All Rights Reserved.
+                    </p>
+                </div>
+                
+                <!-- Navigation -->
+                <div>
+                    <h4 class="text-xs font-bold text-gray-300 uppercase tracking-wider mb-4 border-b border-white/10 pb-2">Navigasi</h4>
+                    <ul class="space-y-2 text-xs text-gray-400">
+                        <li><a href="/" class="hover:text-cyanGlow transition">Beranda</a></li>
+                        <li><a href="/analisis" class="hover:text-cyanGlow transition">Panel Analisis</a></li>
+                        <li><a href="/performa" class="hover:text-cyanGlow transition">Performa Model</a></li>
+                    </ul>
+                </div>
+
+                <!-- Tim Pengembang -->
+                <div>
+                    <h4 class="text-xs font-bold text-gray-300 uppercase tracking-wider mb-4 border-b border-white/10 pb-2">Tim Pengembang</h4>
+                    <ul class="space-y-2 text-xs text-gray-400">
+                        <li>Azmi Novi Athaya <span class="text-[10px] text-gray-500">(2301020001)</span></li>
+                        <li>Rusydi Ardani <span class="text-[10px] text-gray-500">(2301020037)</span></li>
+                        <li>Fauzan Aldi <span class="text-[10px] text-gray-500">(2301020022)</span></li>
+                    </ul>
+                </div>
+
+                <!-- Model Stats -->
+                <div>
+                    <h4 class="text-xs font-bold text-gray-300 uppercase tracking-wider mb-4 border-b border-white/10 pb-2">Spesifikasi Model</h4>
+                    <ul class="space-y-2 text-xs text-gray-400">
+                        <li class="flex justify-between">
+                            <span>Arsitektur:</span>
+                            <span class="font-medium text-gray-300">InceptionV3 Custom</span>
+                        </li>
+                        <li class="flex justify-between">
+                            <span>Jumlah Layer:</span>
+                            <span class="font-medium {% if model_loaded %} text-cyanGlow {% else %} text-yellow-500 {% endif %}">
+                                {% if model_loaded %}{{ total_layers }} Layer{% else %}Belum Dimuat{% endif %}
+                            </span>
+                        </li>
+                        <li class="flex justify-between">
+                            <span>Total Parameter:</span>
+                            <span class="font-medium {% if model_loaded %} text-cyanGlow {% else %} text-yellow-500 {% endif %}">
+                                {% if model_loaded %}{{ "{:,}".format(total_params) }}{% else %}Belum Dimuat{% endif %}
+                            </span>
+                        </li>
+                        <li class="flex justify-between">
+                            <span>Status Sistem:</span>
+                            <span class="font-medium {% if model_loaded %} text-green-400 {% else %} text-yellow-500 {% endif %}">
+                                <i class="fa-solid fa-circle text-[8px] align-middle mr-1 {% if model_loaded %}animate-pulse{% endif %}"></i>
+                                {% if model_loaded %}Online & Ready{% else %}Menunggu Model{% endif %}
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-white/5 pt-6 text-center text-[10px] text-gray-500 flex flex-col sm:flex-row justify-between gap-4">
+                <p>Tugas Projek Pengolahan Citra Digital - Program Studi Teknik Informatika</p>
+                <div class="flex gap-4 justify-center">
+                    <a href="https://github.com" class="hover:text-white transition"><i class="fa-brands fa-github text-sm"></i></a>
+                    <a href="https://google.com" class="hover:text-white transition"><i class="fa-solid fa-globe text-sm"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // Init AOS animations
+        if (typeof AOS !== 'undefined') {
+            AOS.init({
+                once: true,
+                duration: 800,
+                easing: 'ease-out-cubic'
+            });
+        }
+    </script>
+</body>
+</html>

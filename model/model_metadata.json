@@ -1,0 +1,75 @@
+{
+    "model_name": "InceptionV3 Custom",
+    "accuracy": 94.61,
+    "val_accuracy": 96.23,
+    "best_epoch": 10,
+    "total_dataset": 6500,
+    "training_history": {
+        "epochs": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+        ],
+        "train_accuracy": [
+            0.62,
+            0.588,
+            0.76,
+            0.845,
+            0.897,
+            0.933,
+            0.897,
+            0.933,
+            0.933,
+            0.931
+        ],
+        "val_accuracy": [
+            0.643,
+            0.713,
+            0.858,
+            0.858,
+            0.715,
+            0.93,
+            0.787,
+            0.93,
+            1.0,
+            0.9286
+        ],
+        "train_loss": [
+            0.774,
+            0.738,
+            0.531,
+            0.392,
+            0.336,
+            0.311,
+            0.271,
+            0.243,
+            0.282,
+            0.252
+        ],
+        "val_loss": [
+            0.747,
+            0.553,
+            0.478,
+            0.395,
+            0.47,
+            0.371,
+            0.394,
+            0.318,
+            0.28,
+            0.2556
+        ]
+    },
+    "confusion_matrix": {
+        "actual_clean_pred_clean": 45,
+        "actual_clean_pred_dirty": 1,
+        "actual_dirty_pred_clean": 0,
+        "actual_dirty_pred_dirty": 26
+    }
+}

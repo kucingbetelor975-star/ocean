@@ -1,0 +1,146 @@
+body {
+    background-color: #0F172A;
+    background-image: 
+        radial-gradient(at 0% 0%, rgba(14, 165, 233, 0.18) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(56, 189, 248, 0.18) 0px, transparent 50%);
+    background-attachment: fixed;
+}
+.glass-card {
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.glow-text {
+    text-shadow: 0 0 25px rgba(56, 189, 248, 0.4);
+}
+
+/* Drag and Drop Zone */
+.drop-zone {
+    border: 2px dashed rgba(56, 189, 248, 0.3);
+    transition: all 0.3s ease;
+}
+.drop-zone.dragover {
+    border-color: #38BDF8;
+    background: rgba(56, 189, 248, 0.08);
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
+}
+
+/* Loading Spinner */
+.loader-ring {
+    display: inline-block;
+    width: 64px;
+    height: 64px;
+}
+.loader-ring:after {
+    content: " ";
+    display: block;
+    width: 48px;
+    height: 48px;
+    margin: 8px;
+    border-radius: 50%;
+    border: 4px solid #38BDF8;
+    border-color: #38BDF8 transparent #38BDF8 transparent;
+    animation: loader-ring 1.2s linear infinite;
+}
+@keyframes loader-ring {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+/* Floating Particles / Bubbles */
+.bubble-container {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+    z-index: -1;
+    pointer-events: none;
+}
+.bubble {
+    position: absolute;
+    bottom: -30px;
+    background: rgba(56, 189, 248, 0.12);
+    border-radius: 50%;
+    animation: rise 10s infinite linear;
+}
+@keyframes rise {
+    0% {
+        bottom: -30px;
+        transform: translateX(0);
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.7;
+    }
+    90% {
+        opacity: 0.7;
+    }
+    100% {
+        bottom: 110%;
+        transform: translateX(60px);
+        opacity: 0;
+    }
+}
+
+/* Ocean Wave Background SVG (Highly Visible and Deep) */
+.waves {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 18vh;
+    min-height: 120px;
+    max-height: 250px;
+    z-index: -2;
+    pointer-events: none;
+    transition: all 0.3s ease;
+}
+.parallax > use {
+    animation: move-forever 20s cubic-bezier(.55,.5,.45,.5) infinite;
+}
+.parallax > use:nth-child(1) {
+    animation-delay: -2s;
+    animation-duration: 8s;
+}
+.parallax > use:nth-child(2) {
+    animation-delay: -3s;
+    animation-duration: 12s;
+}
+.parallax > use:nth-child(3) {
+    animation-delay: -4s;
+    animation-duration: 16s;
+}
+.parallax > use:nth-child(4) {
+    animation-delay: -5s;
+    animation-duration: 22s;
+}
+@keyframes move-forever {
+    0% { transform: translate3d(-90px,0,0); }
+    100% { transform: translate3d(85px,0,0); }
+}
+
+/* Scan Line Animation */
+.scan-line {
+    position: absolute;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(to right, transparent, #38BDF8, transparent);
+    box-shadow: 0 0 10px #38BDF8;
+    top: 0;
+    left: 0;
+    animation: scan 2s linear infinite;
+    z-index: 10;
+}
+@keyframes scan {
+    0% { top: 0%; }
+    50% { top: 100%; }
+    100% { top: 0%; }
+}

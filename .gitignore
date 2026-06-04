@@ -1,0 +1,23 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environment
+venv/
+.venv/
+env/
+ENV/
+
+# Local databases / temp uploads
+predictions.json
+uploads/*
+!uploads/.gitkeep
+*.bak
+
+# Environment variables
+.env
+
+# Large model binaries
+model/*.h5
+
