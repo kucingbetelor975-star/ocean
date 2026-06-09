@@ -1,10 +1,5 @@
 [phases.setup]
-nixPkgs = ["python3", "python3.pkgs.pip", "git", "git-lfs", "bash"]
-
-[phases.install]
-cmds = [
-    "python3 -m pip install -r requirements.txt"
-]
+nixPkgs = ["python3", "git", "git-lfs", "bash"]
 
 [phases.build]
 cmds = [
