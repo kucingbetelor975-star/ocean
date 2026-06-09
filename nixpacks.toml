@@ -3,9 +3,13 @@ nixPkgs = ["python3", "git", "git-lfs", "bash"]
 
 [phases.install]
 cmds = [
-    "python3 -m ensurepip --upgrade",
-    "python3 -m pip install -r requirements.txt"
+    "python3 -m venv --without-pip /opt/venv",
+    "/opt/venv/bin/python -m ensurepip --upgrade",
+    "/opt/venv/bin/pip install -r requirements.txt"
 ]
+
+[variables]
+NIXPACKS_PATH = "/opt/venv/bin"
 
 [phases.build]
 cmds = [
