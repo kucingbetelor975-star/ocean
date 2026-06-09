@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 Script untuk mengunduh model dari GitHub menggunakan Git LFS atau dari URL alternatif
 Mendukung environment variable MODEL_URL untuk custom download URL
