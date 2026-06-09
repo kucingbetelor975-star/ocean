@@ -18,6 +18,6 @@ uploads/*
 # Environment variables
 .env
 
-# Large model binaries
-model/*.h5
+# Large model binaries - Now using Git LFS instead
+# model/*.h5
 
