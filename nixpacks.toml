@@ -2,7 +2,15 @@
 nixPkgs = ["python3", "git", "git-lfs", "bash"]
 
 [phases.install]
-cmds = ["chmod +x setup_model.sh", "./setup_model.sh"]
+cmds = [
+    "pip install -r requirements.txt"
+]
+
+[phases.build]
+cmds = [
+    "chmod +x setup_model.sh",
+    "bash setup_model.sh"
+]
 
 [start]
 cmd = "python3 download_model.py && gunicorn app:app --bind 0.0.0.0:$PORT --timeout 120 --workers 2"
